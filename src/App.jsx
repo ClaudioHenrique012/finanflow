@@ -154,6 +154,44 @@ const CSS = `
 // ── App ───────────────────────────────────────────────────────────────────────
 
 export default function App() {
+  // Verificar se Supabase está disponível
+  if (!supabase) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        background: '#0A0D14',
+        color: '#F0F1F5',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px',
+        fontFamily: 'system-ui, sans-serif'
+      }}>
+        <div style={{
+          background: '#131720',
+          border: '1px solid rgba(255,255,255,0.07)',
+          borderRadius: '18px',
+          padding: '32px',
+          maxWidth: '500px',
+          textAlign: 'center'
+        }}>
+          <h1 style={{ color: '#F43F5E', marginBottom: '16px' }}>⚠️ Configuração Incompleta</h1>
+          <p style={{ color: '#858AA3', marginBottom: '20px', lineHeight: '1.5' }}>
+            O Supabase não está configurado corretamente. Verifique se as variáveis de ambiente estão definidas.
+          </p>
+          <div style={{ background: '#1A1E2A', padding: '16px', borderRadius: '8px', fontSize: '14px', textAlign: 'left' }}>
+            <strong>Variáveis necessárias no Netlify:</strong>
+            <br />• <code style={{ color: '#3B82F6' }}>VITE_SUPABASE_URL</code>
+            <br />• <code style={{ color: '#3B82F6' }}>VITE_SUPABASE_ANON_KEY</code>
+          </div>
+          <p style={{ color: '#858AA3', marginTop: '16px', fontSize: '14px' }}>
+            Verifique o console do navegador (F12) para mais detalhes.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   const [session, setSession] = useState(undefined) // undefined = loading
 
   useEffect(() => {
