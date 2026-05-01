@@ -1,9 +1,12 @@
 -- =====================================================
 --  FINFLOW — Schema do Banco de Dados (Supabase)
---  Execute este script no SQL Editor do seu projeto:
+--  Execute este script PRIMEIRO no SQL Editor do seu projeto:
 --  Dashboard → SQL Editor → New Query → Cole e Execute
+--
+--  Depois execute schema-rls.sql para as políticas RLS
 -- =====================================================
 
+-- PARTE 1: Criar tabelas (execute primeiro)
 -- Tabela de transações (entradas e saídas)
 CREATE TABLE IF NOT EXISTS transactions (
   id          uuid        DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -33,62 +36,6 @@ CREATE TABLE IF NOT EXISTS categories (
   color       text        NOT NULL,
   created_at  timestamptz DEFAULT now()
 );
-
--- =====================================================
---  Row Level Security (RLS)
---  Garante que cada usuário acesse APENAS seus dados
--- =====================================================
-
-ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
-ALTER TABLE goals        ENABLE ROW LEVEL SECURITY;
-ALTER TABLE categories   ENABLE ROW LEVEL SECURITY;
-
--- Políticas para transactions
-CREATE POLICY "Usuário vê somente suas transações"
-  ON transactions FOR SELECT
-  USING (auth.uid() = user_id);
-
-CREATE POLICY "Usuário cria somente suas transações"
-  ON transactions FOR INSERT
-  WITH CHECK (auth.uid() = user_id);
-
-CREATE POLICY "Usuário edita somente suas transações"
-  ON transactions FOR UPDATE
-  USING (auth.uid() = user_id);
-
-CREATE POLICY "Usuário exclui somente suas transações"
-  ON transactions FOR DELETE
-  USING (auth.uid() = user_id);
-
--- Políticas para goals
-CREATE POLICY "Usuário vê somente sua meta"
-  ON goals FOR SELECT
-  USING (auth.uid() = user_id);
-
-CREATE POLICY "Usuário cria somente sua meta"
-  ON goals FOR INSERT
-  WITH CHECK (auth.uid() = user_id);
-
-CREATE POLICY "Usuário atualiza somente sua meta"
-  ON goals FOR UPDATE
-  USING (auth.uid() = user_id);
-
--- Políticas para categories
-CREATE POLICY "Usuário vê somente suas categorias"
-  ON categories FOR SELECT
-  USING (auth.uid() = user_id);
-
-CREATE POLICY "Usuário cria somente suas categorias"
-  ON categories FOR INSERT
-  WITH CHECK (auth.uid() = user_id);
-
-CREATE POLICY "Usuário edita somente suas categorias"
-  ON categories FOR UPDATE
-  USING (auth.uid() = user_id);
-
-CREATE POLICY "Usuário exclui somente suas categorias"
-  ON categories FOR DELETE
-  USING (auth.uid() = user_id);
 
 -- =====================================================
 --  Índices para performance
