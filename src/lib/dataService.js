@@ -9,6 +9,14 @@ import { supabase } from "./supabase";
 
 // ── Transações ────────────────────────────────────────────────────
 
+async function getAuthenticatedUserId() {
+  const { data, error } = await supabase.auth.getSession();
+  if (error) throw error;
+  const userId = data?.session?.user?.id;
+  if (!userId) throw new Error('Usuário não autenticado. Faça login novamente.');
+  return userId;
+}
+
 export async function getTransactions() {
   const { data, error } = await supabase
     .from("transactions")
@@ -20,13 +28,11 @@ export async function getTransactions() {
 }
 
 export async function createTransaction(tx) {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const userId = await getAuthenticatedUserId();
 
   const { data, error } = await supabase
     .from("transactions")
-    .insert({ ...tx, user_id: user.id })
+    .insert({ ...tx, user_id: userId })
     .select()
     .single();
 
@@ -67,14 +73,12 @@ export async function getGoal() {
 }
 
 export async function saveGoal(amount) {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const userId = await getAuthenticatedUserId();
 
   const { error } = await supabase
-    .from("goals")
+    .from('goals')
     .upsert(
-      { user_id: user.id, amount, updated_at: new Date().toISOString() },
+      { user_id: userId, amount, updated_at: new Date().toISOString() },
       { onConflict: "user_id" },
     );
 
@@ -132,13 +136,11 @@ export async function getCategories() {
 }
 
 export async function createCategory(category) {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const userId = await getAuthenticatedUserId();
 
   const { data, error } = await supabase
     .from("categories")
-    .insert({ ...category, user_id: user.id })
+    .insert({ ...category, user_id: userId })
     .select()
     .single();
 
