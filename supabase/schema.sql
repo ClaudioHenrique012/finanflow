@@ -24,6 +24,16 @@ CREATE TABLE IF NOT EXISTS goals (
   updated_at  timestamptz DEFAULT now()
 );
 
+-- Tabela de categorias personalizadas (por usuário)
+CREATE TABLE IF NOT EXISTS categories (
+  id          uuid        DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id     uuid        REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  name        text        NOT NULL,
+  emoji       text        NOT NULL,
+  color       text        NOT NULL,
+  created_at  timestamptz DEFAULT now()
+);
+
 -- =====================================================
 --  Row Level Security (RLS)
 --  Garante que cada usuário acesse APENAS seus dados
@@ -31,6 +41,7 @@ CREATE TABLE IF NOT EXISTS goals (
 
 ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE goals        ENABLE ROW LEVEL SECURITY;
+ALTER TABLE categories   ENABLE ROW LEVEL SECURITY;
 
 -- Políticas para transactions
 CREATE POLICY "Usuário vê somente suas transações"
@@ -62,6 +73,23 @@ CREATE POLICY "Usuário atualiza somente sua meta"
   ON goals FOR UPDATE
   USING (auth.uid() = user_id);
 
+-- Políticas para categories
+CREATE POLICY "Usuário vê somente suas categorias"
+  ON categories FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Usuário cria somente suas categorias"
+  ON categories FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Usuário edita somente suas categorias"
+  ON categories FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Usuário exclui somente suas categorias"
+  ON categories FOR DELETE
+  USING (auth.uid() = user_id);
+
 -- =====================================================
 --  Índices para performance
 -- =====================================================
@@ -71,3 +99,6 @@ CREATE INDEX IF NOT EXISTS idx_transactions_user_date
 
 CREATE INDEX IF NOT EXISTS idx_goals_user
   ON goals (user_id);
+
+CREATE INDEX IF NOT EXISTS idx_categories_user
+  ON categories (user_id);
