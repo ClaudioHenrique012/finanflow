@@ -825,17 +825,8 @@ function FinFlow({ session }) {
                 );
               })}
               <button
-                style={{
-                  width: '100%',
-                  background: 'transparent',
-                  color: '#3B82F6',
-                  border: '1px solid #3B82F6',
-                  borderRadius: 8,
-                  padding: '10px',
-                  fontSize: 14,
-                  cursor: 'pointer',
-                  marginTop: 16,
-                }}
+                className="btn-ghost"
+                style={{ width: '100%', marginTop: 16 }}
                 onClick={() => setModal('category')}
               >
                 + Criar categoria personalizada
@@ -1179,35 +1170,41 @@ function FinFlow({ session }) {
 
             {modal === 'category' ? (
               <>
-                <Field label="Nome da Categoria">
-                  <input
-                    type="text"
-                    placeholder="Ex: Viagens"
-                    value={categoryForm.name}
-                    onChange={(e) => setCategoryForm((f) => ({ ...f, name: e.target.value }))}
-                  />
-                </Field>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                  <Field label="Nome da categoria">
+                    <input
+                      className="ff-input"
+                      type="text"
+                      placeholder="Ex: Viagens"
+                      value={categoryForm.name}
+                      onChange={(e) => setCategoryForm((f) => ({ ...f, name: e.target.value }))}
+                    />
+                  </Field>
 
-                <Field label="Emoji">
-                  <input
-                    type="text"
-                    placeholder="Ex: ✈️"
-                    value={categoryForm.emoji}
-                    onChange={(e) => setCategoryForm((f) => ({ ...f, emoji: e.target.value }))}
-                  />
-                </Field>
+                  <Field label="Emoji">
+                    <input
+                      className="ff-input"
+                      type="text"
+                      placeholder="Ex: ✈️"
+                      value={categoryForm.emoji}
+                      onChange={(e) => setCategoryForm((f) => ({ ...f, emoji: e.target.value }))}
+                    />
+                  </Field>
 
-                <Field label="Cor">
-                  <input
-                    type="color"
-                    value={categoryForm.color}
-                    onChange={(e) => setCategoryForm((f) => ({ ...f, color: e.target.value }))}
-                  />
-                </Field>
+                  <Field label="Cor">
+                    <input
+                      className="ff-input"
+                      type="color"
+                      value={categoryForm.color}
+                      onChange={(e) => setCategoryForm((f) => ({ ...f, color: e.target.value }))}
+                      style={{ padding: 4, height: 42 }}
+                    />
+                  </Field>
+                </div>
 
-                <div style={{ display: "flex", gap: 10, marginTop: 22 }}>
+                <div style={{ display: 'flex', gap: 10, marginTop: 22 }}>
                   <button
-                    className="btn-secondary"
+                    className="btn-ghost"
                     onClick={closeModal}
                     disabled={saving}
                   >
